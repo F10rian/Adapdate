@@ -70,7 +70,7 @@ Cut out the adapters:
 <code><pre>python src/cut_network.py --model adapter-net --model-path D70_V7_Q0_to_adapter_v3_R2_D7.pth --v 3 --R 2</code></pre>
 
 Compress and decompress the cutout adapters with NNCodec:
-<code><pre>python src/compress_decompress.py --model-path only_adapter_D70_V7_Q0_to_adapter_v3_R2_D7.pth --qp -60</code></pre>
+<code><pre>python src/compress_decompress_net.py --model-path only_adapter_D70_V7_Q0_to_adapter_v3_R2_D7.pth --qp -60</code></pre>
 
 Update the Adaptor of the net the adapters have just been added (or a net with the same weights as the initialy trained net to wich adapters have been added):
 <code><pre>python src/update_adapter.py --model adapter-net --model-path D70_V7_Q0_to_adapter_v3_R2.pth --adapter-path Decompressed_only_adapter_D70_V7_Q0_to_adapter_v3_R2_D7-60.pth --v 3 --R 2</code></pre>

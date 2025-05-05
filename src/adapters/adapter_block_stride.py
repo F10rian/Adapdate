@@ -1,13 +1,5 @@
 import torch.nn as nn
 from torch import Tensor
-from compressai.layers import (
-    AttentionBlock,
-    ResidualBlock,
-    ResidualBlockUpsample,
-    ResidualBlockWithStride,
-    conv3x3,
-    subpel_conv3x3,
-)
 from compressai.layers.gdn import GDN
 
 class ResidualAdapterBlockStride(nn.Module):

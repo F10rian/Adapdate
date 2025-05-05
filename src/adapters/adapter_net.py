@@ -1,17 +1,10 @@
 import torch.nn as nn
-
-from compressai.entropy_models import EntropyBottleneck
-from compressai.layers import GDN
-
 from compressai.layers import (
-    AttentionBlock,
-    ResidualBlock,
     ResidualBlockUpsample,
     ResidualBlockWithStride,
     conv3x3,
     subpel_conv3x3,
 )
-
 from compressai.models.google import JointAutoregressiveHierarchicalPriors
 from adapters.adapter_block import ResidualAdapterBlock
 
