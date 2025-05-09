@@ -1,31 +1,13 @@
 import argparse
-import random
-import shutil
 import sys
-
 import torch
-import torch.nn as nn
-import torch.optim as optim
-
-from compressai.optimizers import net_aux_optimizer
-from compressai.zoo import image_models
-
-from torch.utils.data import Dataset
-from PIL import Image
-import wandb
-import random
-import os
-import pandas as pd
-import numpy as np
-
-from compressai.utils.eval_model.__main__ import inference_entropy_estimation, load_checkpoint, inference
+from compressai.utils.eval_model.__main__ import load_checkpoint
 
 from adapters.adapter_net import AdapterNet
 from adapters.adapter_net2 import AdapterNetAll
 
-from adapters.adapter_for_adapter_net import Adapter_for_adapter_net
-from adapters.adapter_for_adapter_net2 import Adapter_for_adapter_net2
-
+from adapters.adapters_of_adapternet_for_transition import Adapter_for_adapter_net
+from adapters.adapters_of_adapternet2_for_tranisiton import Adapter_for_adapter_net2
 
 def update_adapter(arch="adapter-net", checkpoint_path="./", checkpoint_adap_path="./", v=3, R=2):
     unfreeze_list = []
@@ -134,7 +116,6 @@ def update_adapter(arch="adapter-net", checkpoint_path="./", checkpoint_adap_pat
     path = '/'.join(filepath.split('.')[0].split('/')[:-1])
     path += '/'
     model_name = filepath.split('.')[0].split('/')[-1:][0]
-
 
     savefile = path + 'Updated_' + model_name + '.pth'
 

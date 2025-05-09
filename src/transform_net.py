@@ -1,25 +1,13 @@
 import argparse
-import random
-import shutil
 import sys
-
 import torch
-import torch.nn as nn
 import torch.optim as optim
 
 from compressai.optimizers import net_aux_optimizer
 from compressai.zoo import image_models
 
-from torch.utils.data import Dataset
-from PIL import Image
-import random
-import os
-import pandas as pd
-import numpy as np
-
 from adapters.adapter_net import AdapterNet
 from adapters.adapter_net2 import AdapterNetAll
-
 
 def configure_optimizers(net, learning_rate, aux_learning_rate):
     """Separate parameters for the main optimizer and the auxiliary optimizer.
@@ -43,7 +31,6 @@ def transform(to_net="adapter-net", old_net_path="./", v=3, R=2):
         new_net = image_models["cheng2020-anchor"](quality=3)
         savepath = old_net_path.split('.')[0] + "_ERROR.pth"
     net = image_models["cheng2020-anchor"](quality=3)
-
 
     cuda = True
     device = "cuda" if cuda and torch.cuda.is_available() else "cpu"

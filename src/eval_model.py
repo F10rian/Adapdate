@@ -1,10 +1,8 @@
-from compressai.utils.eval_model.__main__ import inference_entropy_estimation, load_checkpoint, inference
+from compressai.utils.eval_model.__main__ import load_checkpoint, inference
 from tqdm import tqdm
 import torch
 from adapters.adapter_net import AdapterNet
 from adapters.adapter_net2 import AdapterNetAll
-
-from compressai.zoo.image import model_architectures as architectures
 
 def eval_model(arch: str, checkpoint_path, dataset, dataloader):
     #load model

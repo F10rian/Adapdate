@@ -1,12 +1,64 @@
 import torch
-import torch.nn as nn
-import torch.optim as optim
 from torch.utils.data import Dataset
 from PIL import Image
 
 from torch.utils.data import DataLoader
-from torchvision import transforms
 
+
+class ImageDataset(Dataset):
+
+    def __init__(self, datalist, image_dir, transformer, set_):
+
+        self.datalist = datalist
+        self.image_dir = image_dir
+        self.transformer = transformer
+        self.images_per_sequence = 7
+        self.set = set_
+
+        file = open(self.datalist)
+        self.datalist_lines=file.readlines()
+
+        #length of datalist_lines for train dataset is 64612
+        if self.set == "train":
+            self.datalist_lines = self.datalist_lines[:58152]
+            self.images_per_sequence = 7
+        if self.set == "train7":
+            self.datalist_lines = self.datalist_lines[:58152]
+            self.images_per_sequence = 1
+        elif self.set == "train28":
+            self.datalist_lines = self.datalist_lines[:14539]
+            self.images_per_sequence = 1
+        elif self.set == "train70":
+            self.datalist_lines = self.datalist_lines[:5815]
+            self.images_per_sequence = 1
+        elif self.set == "val":
+            self.datalist_lines = self.datalist_lines[58151:]
+            self.images_per_sequence = 7
+        elif self.set == "val7":
+            self.datalist_lines = self.datalist_lines[58151:]
+            self.images_per_sequence = 1
+        elif self.set == "test":
+            self.datalist_lines = self.datalist_lines
+            self.images_per_sequence = 7
+        elif self.set == "test7":
+            self.datalist_lines = self.datalist_lines
+            self.images_per_sequence = 1
+        elif self.set == "all":
+            self.datalist_lines = self.datalist_lines
+            self.images_per_sequence = 7
+
+
+    def __len__(self):
+        return len(self.datalist_lines) * self.images_per_sequence
+
+    def __getitem__(self, index):
+        line = index // self.images_per_sequence                #for full sequence
+        sequnce_pic = (index % self.images_per_sequence) + 1    #for full sequence
+
+        path = self.image_dir + '/' + self.datalist_lines[line].strip() + '/im' + str(sequnce_pic) + '.png' #for full sequence
+        image = Image.open(path).convert('RGB')
+
+        return self.transformer(image)
 
 class Vimeo90KDataset(Dataset):
 

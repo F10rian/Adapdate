@@ -1,29 +1,11 @@
-import argparse
-import random
-import shutil
 import sys
-
 import torch
-import torch.nn as nn
-import torch.optim as optim
-
-from compressai.optimizers import net_aux_optimizer
-from compressai.zoo import image_models
-
-from torch.utils.data import Dataset
-from PIL import Image
-import wandb
-import random
-import os
-import pandas as pd
-import numpy as np
-
-from compressai.utils.eval_model.__main__ import inference_entropy_estimation, load_checkpoint, inference
+from compressai.utils.eval_model.__main__ import load_checkpoint
 
 from adapters.adapter_net import AdapterNet
 from adapters.adapter_net2 import AdapterNetAll
 
-from adapters.adapter_for_adapter_net import Adapter_for_adapter_net
+from adapters.adapters_of_adapternet_for_transition import Adapter_for_adapter_net
 
 arch = str(sys.argv[1])
 checkpoint_path = str(sys.argv[2])

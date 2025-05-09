@@ -25,6 +25,7 @@ import numpy as np
 from adapters.adapter_net import AdapterNet
 from adapters.adapter_net2 import AdapterNetAll
 
+from dataset import ImageDataset
 
 
 class AverageMeter:
@@ -159,9 +160,7 @@ def test_epoch(epoch, test_dataloader, model, criterion):
         f"\tBpp loss: {bpp_loss.avg:.2f} |"
         f"\tAux loss: {aux_loss.avg:.2f}\n"
     )
-
     return loss.avg
-
 
 def save_checkpoint(state, is_best, filename="checkpoint"):
     save = filename + "_last_epoch.pth"
@@ -169,7 +168,6 @@ def save_checkpoint(state, is_best, filename="checkpoint"):
     if is_best:
         filename = filename + ".pth"
         shutil.copyfile(save, filename)
-
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(description="Example training script.")
@@ -247,8 +245,6 @@ def parse_args(argv):
     args = parser.parse_args(argv)
     return args
 
-
-
 def configure_optimizers(net, learning_rate, aux_learning_rate):
     """Separate parameters for the main optimizer and the auxiliary optimizer.
     Return two optimizers"""
@@ -258,7 +254,6 @@ def configure_optimizers(net, learning_rate, aux_learning_rate):
     }
     optimizer = net_aux_optimizer(net, conf)
     return optimizer["net"], optimizer["aux"]
-
 
 def train_model(args, savename="checkpoint", dataset='./', dataset_name=None, train_dataloader=None, val_dataloader=None, batch_size=16, 
 seed=None, cuda=True, save=True, patch_size=(256, 256), learning_rate=1e-4, aux_learning_rate=1e-3, lmbda=1e-2, epochs=70, 
@@ -286,8 +281,6 @@ num_workers=4, clip_max_norm=1.0, checkpoint=None, train_only_adapter=False):
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
         os.environ["PYTHONHASHSEED"] = str(seed)
-
-
 
     device = "cuda" if cuda and torch.cuda.is_available() else "cpu"
 
@@ -341,8 +334,7 @@ num_workers=4, clip_max_norm=1.0, checkpoint=None, train_only_adapter=False):
                 aux_optimizer,
                 epoch,
                 clip_max_norm,
-            )
-            
+            )   
         else:
             train_one_epoch(
                 net,
@@ -385,65 +377,6 @@ num_workers=4, clip_max_norm=1.0, checkpoint=None, train_only_adapter=False):
     df = pd.DataFrame({'epochs': epochs_own,
                         'losses': losses_own})
     df.to_csv(savename + ".csv", index=False) 
-    
-
-
-
-
-class ImageDataset(Dataset):
-
-    def __init__(self, datalist, image_dir, transformer, set_):
-
-        self.datalist = datalist
-        self.image_dir = image_dir
-        self.transformer = transformer
-        self.images_per_sequence = 7
-        self.set = set_
-
-        file = open(self.datalist)
-        self.datalist_lines=file.readlines()
-
-        #length of datalist_lines for train dataset is 64612
-        if self.set == "train":
-            self.datalist_lines = self.datalist_lines[:58152]
-            self.images_per_sequence = 7
-        if self.set == "train7":
-            self.datalist_lines = self.datalist_lines[:58152]
-            self.images_per_sequence = 1
-        elif self.set == "train28":
-            self.datalist_lines = self.datalist_lines[:14539]
-            self.images_per_sequence = 1
-        elif self.set == "train70":
-            self.datalist_lines = self.datalist_lines[:5815]
-            self.images_per_sequence = 1
-        elif self.set == "val":
-            self.datalist_lines = self.datalist_lines[58151:]
-            self.images_per_sequence = 7
-        elif self.set == "val7":
-            self.datalist_lines = self.datalist_lines[58151:]
-            self.images_per_sequence = 1
-        elif self.set == "test":
-            self.datalist_lines = self.datalist_lines
-            self.images_per_sequence = 7
-        elif self.set == "test7":
-            self.datalist_lines = self.datalist_lines
-            self.images_per_sequence = 1
-        elif self.set == "all":
-            self.datalist_lines = self.datalist_lines
-            self.images_per_sequence = 7
-
-
-    def __len__(self):
-        return len(self.datalist_lines) * self.images_per_sequence
-
-    def __getitem__(self, index):
-        line = index // self.images_per_sequence                #for full sequence
-        sequnce_pic = (index % self.images_per_sequence) + 1    #for full sequence
-
-        path = self.image_dir + '/' + self.datalist_lines[line].strip() + '/im' + str(sequnce_pic) + '.png' #for full sequence
-        image = Image.open(path).convert('RGB')
-
-        return self.transformer(image)
 
 
 def get_dataloader(path=None, dataset=None, patch_size=(256, 256), transformer=None, batch_size=16):
@@ -561,9 +494,6 @@ def main(argv):
     val_dataloader = get_dataloader(dataset=val_dataset, patch_size=args.patch_size, transformer=None, batch_size=args.batch_size)
 
     train_model(args, train_dataloader=train_dataloader, val_dataloader=val_dataloader)
-
-
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])

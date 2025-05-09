@@ -1,6 +1,4 @@
 import nnc
-import torch
-import os
 import argparse
 import sys
 

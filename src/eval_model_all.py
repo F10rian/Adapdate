@@ -1,21 +1,9 @@
 import argparse
-import compressai
-import torch
 from torchvision import transforms
-from PIL import Image
-import numpy as np
-import os
-import numpy as np
-from pathlib import Path
 import sys
 import pandas as pd
-import csv
-import random
 
-from compressai.utils.eval_model.__main__ import inference_entropy_estimation
-from compressai.utils.eval_model.__main__ import load_checkpoint
-
-from datahandling import *
+from dataset import *
 
 from eval_model import eval_model
 
